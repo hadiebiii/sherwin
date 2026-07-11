@@ -1,1 +1,532 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آزمون شبیه‌ساز بورد رادیولوژی فک و صورت</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Custom radio button styles for better aesthetics */
+        input[type="radio"] {
+            accent-color: #4f46e5;
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+        .correct-anim {
+            animation: pulse-green 1s;
+        }
+        .wrong-anim {
+            animation: shake-red 0.5s;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        @keyframes shake-red {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+        /* Hide scrollbar for a cleaner look but keep functionality */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7c7cc; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a5; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased relative">
 
+    <!-- Sticky Header -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold">آزمون جامع بورد تخصصی رادیولوژی دهان، فک و صورت</h1>
+                <p class="text-indigo-200 text-sm mt-1">شبیه‌ساز پیشرفته سوالات مفهومی</p>
+            </div>
+            <div class="bg-indigo-800 px-4 py-2 rounded-lg shadow-inner">
+                <span id="score-display" class="font-bold text-lg">۰ / ۲۰</span>
+                <span class="text-xs text-indigo-300 block text-center">امتیاز</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-8" id="quiz-container">
+        <!-- Questions will be injected here by JavaScript -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center pb-8 text-gray-500 text-sm">
+        <p>طراحی شده بر اساس رفرنس رسمی White & Pharoah (ویرایش نهم ۲۰۲۶)</p>
+    </footer>
+
+    <!-- Custom Toast/Message Box -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // Quiz Data Structuring
+        const questions = [
+            {
+                id: 1,
+                scenario: "یک بیمار ۱۶ ساله با یک لوسنسی اسکالوپ‌دار و بدون درد در بدنه فک پایین مراجعه کرده است. در ارزیابی رادیوگرافیک، ضایعه فاقد اکسپنشن باکولینگوال بوده و لامینا دورای دندان‌های مجاور سالم است. طراح سوال برای افتراق قطعی این ضایعه از کراتوسیست ادنتوژنیک (OKC)، بر روی کدام ویژگی تصویربرداری بسیار مشخص و اختصاصی (Highly Characteristic) کیست استخوان ساده (SBC) تمرکز می‌کند؟",
+                options: [
+                    "الف) عدم ایجاد هرگونه اکسپنشن باکال یا لینگوال در بدنه مندیبل",
+                    "ب) عدم جابجایی دندان‌ها و عدم جذب ریشه در تمامی موارد گزارش شده",
+                    "ج) حفظ کورتکس و مرز قشری فولیکول دندان در حال رویش مجاور ضایعه",
+                    "د) وجود نمای پسودوسپتا در ساختار داخلی همراه با لبه‌های اسکالوپ‌دار بین ریشه‌ها"
+                ],
+                correctOptionIndex: 2,
+                analysis: "<b>چرا گزینه «ج» صحیح است:</b> بر اساس متن صریح رفرنس، کیست استخوان ساده (SBC) مرز کورتیکال فولیکول اطراف دندان در حال رشد را کاملاً دست‌نخورده باقی می‌گذارد که این پدیده به عنوان یک «ویژگی بسیار مشخص» (highly characteristic feature) برای SBC توصیف شده است.<br><br><b>قانون مرور یک‌خطی:</b> حفظ مرز کورتیکال فولیکول دندان در حال رشد، امضا و ویژگی بسیار اختصاصی کیست استخوان ساده (SBC) در برابر OKC است."
+            },
+            {
+                id: 2,
+                scenario: "کودک ۹ ساله‌ای با تورم و ناراحتی ملایم در ناحیه مولر اول سمت چپ مندیبل (دندان #۱۹) مراجعه می‌کند. در رادیوگرافی، اپیسنتر ضایعه در ناحیه فورکاسیون باکال دندان قرار دارد. تاج دندان به سمت باکال و ریشه‌های آن به سمت لینگوال کج شده‌اند (Tipping). کورتکس باکال نازک شده و نمای واکنش پریوستی لایه‌لایه (Periosteal new bone) در مجاورت آن مشهود است. تست حیاتی دندان مثبت است. محتمل‌ترین تشخیص چیست؟",
+                options: [
+                    "الف) Lateral Periodontal Cyst",
+                    "ب) Osteomyelitis with Proliferative Periostitis",
+                    "ج) Glandular Odontogenic Cyst",
+                    "د) Buccal Bifurcation Cyst"
+                ],
+                correctOptionIndex: 3,
+                analysis: "<b>چرا گزینه «د» صحیح است:</b> تمامی معیارهای طلایی کیست فورکاسیون باکال (BBC) در سناریو آمده است: سن پایین (کودک)، درگیری مولر اول مندیبل، اپیسنتر در فورکاسیون باکال، کج شدن کلاسیک تاج به باکال و ریشه‌ها به لینگوال (Tipping)، زنده بودن دندان (Vital) و واکنش پریوستی لایه‌لایه در صورت وجود التهاب ثانویه.<br><br><b>قانون مرور یک‌خطی:</b> سه‌گانه طلایی BBC شامل «سن پایین + فورکیشن مولر مندیبل + انحراف تاج به باکال و ریشه به لینگوال» است."
+            },
+            {
+                id: 3,
+                scenario: "در ارزیابی یک ضایعه رادیولوسنت پریکرونال تک‌حفره‌ای منسوب به تاج یک دندان نهفته، کدام یک از فاکتورهای زیر کمترین اهمیت و ارزش تشخیصی را در افتراق بین کیست دنتیجروس و کراتوسیست ادنتوژنیک (OKC) دارا است؟",
+                options: [
+                    "الف) میزان و شدت اتساع (Expansion) کورتکس استخوان در بازسازی باکولینگوال",
+                    "ب) الگوی رادیوگرافیک ساختار داخلی ضایعه (Internal Radiographic Pattern)",
+                    "ج) محل اتصال دقیق حاشیه کورتیکال ضایعه به ساختار دندان مجاور",
+                    "د) میزان و شیوع تحلیل ریشه (Root Resorption) در دندان‌های درگیر مجاور"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> هر دو ضایعه به طور کلاسیک کاملاً رادیولوسنت و تک‌حفره‌ای (Unilocular) هستند؛ بنابراین نمای ساختار داخلی به طراح کمک نمی‌کند و کمترین اهمیت را دارد.<br><br><b>قانون مرور یک‌خطی:</b> نمای داخلی هر دو کیست کاملاً رادیولوسنت است، لذا ساختار داخلی بدترین معیار برای افتراق OKC از کیست دنتیجروس است."
+            },
+            {
+                id: 4,
+                scenario: "یک بیمار جوان با تاجهایی با ظاهر کلینیکی کاملاً نرمال مراجعه می‌کند. در بررسی رادیوگرافیک سراسری فکین، دندان‌ها دارای ریشه‌های بسیار کوتاه، بدشکل و تقریباً «بدون ریشه» (Rootless) هستند. اتاقک‌های پالپ در تمامی دندان‌ها به شدت کاهش حجم یافته و به صورت بقایای هلالی‌شکل (Crescent-shaped pulpal remnants) دیده می‌شوند. همچنین ضایعات رادیولوسنت متعدد پری‌آپیکال در اطراف ریشه دندان‌های کاملاً بدون پوسیدگی و بدون سابقه تروما مشهود است. تشخیص رادیولوژیک چیست؟",
+                options: [
+                    "الف) Dentinogenesis Imperfecta",
+                    "ب) Dentin Dysplasia Type I (Radicular)",
+                    "ج) Dentin Dysplasia Type II (Coronal)",
+                    "د) Regional Odontodysplasia"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> ریشه‌های کوتاه و مخروطی (Rootless teeth)، اتاقک‌های پالپی هلالی‌شکل و ضایعات متعدد پری‌آپیکال خودبه‌خودی (بدون پوسیدگی/تروما) ویژگی‌های رادیولوژیک کلاسیک و پاتوگنومونیک دیسپلازی عاج تیپ ۱ (Radicular Dentin Dysplasia) هستند.<br><br><b>قانون مرور یک‌خطی:</b> دیسپلازی عاج تیپ ۱ با «ریشه‌های بسیار کوتاه + پالپ هلالی + ضایعات پری‌آپیکال خودبه‌خودی» شناخته می‌شود."
+            },
+            {
+                id: 5,
+                scenario: "در رادیوگرافی پانورامیک تصادفی یک مرد ۵۵ ساله، یک لوسنسی تک‌حفره‌ای و بیضی‌شکل در زیر کانال مندیبل (Inferior Alveolar Canal) در ناحیه زاویه فک پایین مشاهده می‌شود. ضایعه دارای حاشیه کورتیکال بسیار ضخیم و متراکمی است که به طور مستقیم با قشر پایینی (Inferior border) مندیبل ادغام شده است. هیچ اثر جابجایی دندانی یا تحلیل استخوان آلوئول دیده نمی‌شود. بهترین اقدام بالینی چیست؟",
+                options: [
+                    "الف) ارجاع فوری جهت جراحی و خارج کردن ضایعه به دلیل احتمال وجود بدخیمی",
+                    "ب) تهیه رادیوگرافی بایت‌وینگ و معاینه بالینی وضعیت پریودنتال دندان‌های مجاور",
+                    "ج) عدم نیاز به درمان و جراحی و پیگیری غیرتهاجمی با اطمینان از ماهیت ضایعه",
+                    "د) تجویز سی‌بی‌سی‌تی (CBCT) با فیلد بزرگ جهت بررسی دقیق میزان تخریب قشر باکال"
+                ],
+                correctOptionIndex: 2,
+                analysis: "<b>چرا گزینه «ج» صحیح است:</b> این یافته رادیولوژیک، تصویر کلاسیک نقص استخوانی غده بزاقی استافنه (Stafne Defect) است. Stafne یک انحراف آناتومیک خوش‌خیم و غیرکیستی ناشی از فشار غده بزاقی به کورتکس لینگوال است که به هیچ وجه نیاز به مداخله جراحی ندارد.<br><br><b>قانون مرور یک‌خطی:</b> لوسنسی کورتیکه ضخیم در زیر IAC که هیچ اثر دندانی ندارد، نقص استافنه بوده و نیازمند هیچ درمانی نیست."
+            },
+            {
+                id: 6,
+                scenario: "یک بیمار ۳۲ ساله با شکایت از دردهای مبهم و متناوب استخوانی در ناحیه بدنه مندیبل مراجعه می‌کند. در رادیوگرافی، اسکلروز بسیار شدید و منتشر استخوان به همراه تغییر شکل کورتکس فک پایین مشهود است. در معاینات پوستی بیمار، ضایعات جوش‌مانند چرکی در کف دست‌ها و کف پاها (Palmoplantar Pustulosis) دیده می‌شود. محتمل‌ترین تشخیص برای پاتولوژی فک این بیمار چیست؟",
+                options: [
+                    "الف) Osteoradionecrosis (ORN)",
+                    "ب) SAPHO Syndrome",
+                    "ج) Proliferative Periostitis of Garré",
+                    "د) Paget's Disease of Bone"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> ترکیب ضایعات پوستی چرکی دست و پا (پوستولوز) همراه با استئیت اسکلروزان منتشر فک پدیده کلاسیک سندرم SAPHO است که رفرنس صریحاً این همپوشانی را ذکر کرده است.<br><br><b>قانون مرور یک‌خطی:</b> همزمانی استئیت اسکلروزان منتشر فک با جوش‌های چرکی کف دست و پا، کلید تشخیصی سندرم SAPHO است."
+            },
+            {
+                id: 7,
+                scenario: "رادیولوژیست دهان و فک و صورت در ارزیابی ساختارهای نگهدارنده دندان در یک گرافی پریاپیکال، به اثرات ناشی از ضربه اکلوزال (Traumatic Occlusion) مشکوک می‌شود. کدام مجموعه از یافته‌های رادیوگرافیک به طور مستقیم نشان‌دهنده واکنش بافت‌ها به تروما ناشی از اکلوزن آسیب‌رسان است؟",
+                options: [
+                    "الف) کاهش ارتفاع کرست استخوان به صورت یکنواخت و ایجاد نقایص زاویه‌دار",
+                    "ب) عریض شدن فضای غشای پریودنتال (PDL Widening) و ضخیم شدن لامینا دورا (Thickened Lamina Dura)",
+                    "ج) از بین رفتن کامل کورتکس لامینا دورا در ناحیه اپیکال و ایجاد لوسنسی دور ریشه",
+                    "د) تحلیل عمودی کرست استخوان آلوئول بدون هیچ تغییری در فضای لیگامان پریودنتال"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> واکنش کلاسیک به تروما اکلوزال شامل پهن شدن (Widening) فضای PDL به صورت یکنواخت یا غیریکنواخت و ضخیم شدن جبرانی استخوان لامینا دورا (Thickened lamina dura) است تا نیروهای بیش از حد را تحمل کند.<br><br><b>قانون مرور یک‌خطی:</b> ترکیب «Widening PDL + Thickened Lamina Dura» رفلکس و پاسخ بیولوژیک استخوان به ترویج تروما اکلوزال است."
+            },
+            {
+                id: 8,
+                scenario: "یک لوسنسی بزرگ و اسکالوپ‌دار در بدنه مندیبل خلفی یک بیمار مشاهده می‌شود. ضایعه هیچ‌گونه اتساع کورتکس باکال یا لینگوال ایجاد نکرده و اثری روی دندان‌ها نگذاشته است. رادیولوژیست قصد دارد بین کراتوسیست ادنتوژنیک (OKC) و کیست استخوان ساده (SBC) تشخیص افتراقی بگذارد. کدام ویژگی رادیوگرافیک بیشترین وزن تشخیصی را علیه SBC و به نفع OKC ایفا می‌کند؟",
+                options: [
+                    "الف) حضور یک حاشیه کورتیکال کاملاً واضح، تیز و کورتیکه (Sharp/Corticated margin)",
+                    "ب) امتداد ضایعه در طول فک بدون ایجاد جابجایی در کانال آلوئولار تحتانی",
+                    "ج) عدم وجود پدیده تحلیل ریشه و عدم جابجایی دندان‌های درگیر در طول قوس",
+                    "د) جهت‌گیری ضایعه در سمت خلفی فک پایین و سوپریور به کانال عصب دندانی"
+                ],
+                correctOptionIndex: 0,
+                analysis: "<b>چرا گزینه «الف» صحیح است:</b> مرزهای کیست استخوان ساده (SBC) معمولاً بسیار ظریف و کمرنگ هستند، در حالی که OKC دارای حاشیه کورتیکال کاملاً واضح، کورتیکه و بسیار مشخصی است؛ بنابراین وجود کورتکس قوی و تیز علیه SBC و شدیداً به نفع OKC است.<br><br><b>قانون مرور یک‌خطی:</b> کورتکس ضخیم و مرز شارپ کیست، تشخیص SBC را رد کرده و به نفع OKC تغییر می‌دهد."
+            },
+            {
+                id: 9,
+                scenario: "در رادیوگرافی پانورامیک تصادفی یک مرد ۴۹ ساله، یک توده رادیواپاک گنبدی‌شکل (Dome-shaped) با حدود کاملاً مشخص اما بدون کورتکس و فاقد مرز قشرگذاری‌شده (Non-corticated border) در کف سینوس ماگزیلا دیده می‌شود. در تصویربرداری پیگیری متوالی ۶ ماه بعد، توده به طور خودبه‌خودی کاملاً ناپدید شده است. پاتولوژی پشتیبان این یافته چیست؟",
+                options: [
+                    "الف) کیست حقیقی با پوشش اپیتلیال که دچار پارگی ناگهانی دیواره شده است",
+                    "ب) کیست کاذب (سودوکیست) ناشی از تجمع مایع در بافت همبند زیرمخاطی سینوس",
+                    "ج) دیسپلازی فیبروز فعال که تحت‌تاثیر بازسازی استخوانی گذرا فروکش کرده است",
+                    "د) پولیپ حقیقی سینوس با ریشه استخوانی کورتیکال که از کورتکس کف جدا شده است"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> کیست‌های کاذب احتباسی فاقد پوشش اپیتلیال و دیواره کورتیکال بوده، نمایی گنبدی در کف سینوس دارند و ماهیتی کاملاً گذرا داشته و به سرعت و خودبه‌خود در پیگیری‌های چندماهه ناپدید می‌شوند.<br><br><b>قانون مرور یک‌خطی:</b> اوپاسیته گنبدی فاقد کورتکس در کف سینوس که خودبه‌خود ناپدید می‌شود، کیست کاذب احتباسی (Pseudocyst) است."
+            },
+            {
+                id: 10,
+                scenario: "در رادیوگرافی پریاپیکال یک دندان پره‌مولر، یک لوسنسی نامنظم بر روی سطح ریشه در مجاورت ناحیه CEJ و طوق دندان مشاهده می‌شود. دندان دارای تحلیل شدید لثه (Recession) است. رادیولوژیست برای افتراق قطعی این نمای لوسنسی بین پوسیدگی واقعی سطح ریشه (Root Caries) و پدیده سوزش گردنی (Cervical Burnout)، کدام فاکتور رادیوگرافیک و بالینی را ملاک اصلی تصمیم‌گیری قرار می‌دهد؟",
+                options: [
+                    "الف) بررسی میزان رادیواپاسیته استخوان آلوئولار کرست مجاور دندان در گرافی دیجیتال",
+                    "ب) وجود یا فقدان تخریب کانتور خارجی ریشه دندان به همراه معاینه مستقیم بالینی با سوند",
+                    "ج) جابجا شدن ضایعه به سمت اکلوزال با تغییر زاویه افقی تیوب اشعه تا ۱۵ درجه",
+                    "د) استفاده از فیلترهای کنتراست بالای نرم‌افزار سنسور جهت حذف آرتیفکت استخوان"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> در پدیده Cervical Burnout کانتور فیزیکی و خارجی ریشه دندان در رادیوگرافی کاملاً سالم و پیوسته باقی می‌ماند. اما در پوسیدگی واقعی ریشه، کانتور خارجی دندان تخریب و فرسوده می‌شود و لمس کلینیکی با سوند این نقص فیزیکی را تایید می‌کند.<br><br><b>قانون مرور یک‌خطی:</b> در Cervical Burnout کانتور خارجی دندان حفظ می‌شود، در حالی که در پوسیدگی واقعی ریشه کانتور فیزیکی دچار فروپاشی می‌گردد."
+            },
+            {
+                id: 11,
+                scenario: "یک بیمار ۱۶ ساله با اکسپنشن بدون درد و یک‌طرفه در ناحیه خلفی ماگزیلا مراجعه کرده است. در تصویربرداری، نمای کلاسیک «شیشه مات» (Ground-glass) در محل دیده می‌شود. طراح سوال برای افتراق قطعی این ضایعه از سیمنتو-اوسئوس فیبرومای مرکزی (COF)، بر روی کدام ویژگی کلیدی در مرزهای ضایعه تمرکز می‌کند؟",
+                options: [
+                    "الف) وجود یک کورتکس ضخیم و مشخص در فیبروز دیسپلازی که آن را از کورتکس ظریف COF متمایز می‌سازد.",
+                    "ب) ادغام تدریجی و بدون مرز واضح (Blending margin) ساختار غیرطبیعی استخوان با استخوان نرمال پیرامون در فیبروز دیسپلازی.",
+                    "ج) وجود یک کپسول رادیولوسنت یا هاله فیبروزه ظریف در حاشیه خارجی فیبروز دیسپلازی.",
+                    "د) جابجایی شدید و متمرکز مجرای عصب آلوئولار زیرین به سمت پایین بدون تغییر در کانتور استخوان در فیبروز دیسپلازی."
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> یکی از پاتوگنومونیک‌ترین ویژگی‌های رادیوگرافیک فیبروز دیسپلازی این است که ضایعه فاقد مرز مشخص یا کپسول است؛ بلکه ترابکول‌های تغییریافته به تدریج و به شکل Blending با استخوان سالم اطراف ادغام می‌شوند. در مقابل، COF دارای یک مرز کاملاً مشخص، کورتیکه و هاله رادیولوسنت کپسول‌مانند است.<br><br><b>قانون مرور یک‌خطی:</b> فیبروز دیسپلازی با مرز ادغام‌شونده (Blending) و بدون کپسول شناخته می‌شود، در حالی که COF دارای مرز مشخص و هاله کپسول‌مانند است."
+            },
+            {
+                id: 12,
+                scenario: "یک مرد ۶۸ ساله با شکایت از بزرگ شدن تدریجی فک بالا و ایجاد فواصل جدید بین دندان‌ها مراجعه کرده است. در رادیوگرافی پانورامیک، دندان‌های مولر و پره‌مولر فک بالا تغییرات ساختاری شدیدی را به صورت رسوب بیش از حد و پیازی‌شکل مواد سخت در اطراف ریشه نشان می‌دهند (Bulbous root enlargement). فضای پی‌دی‌ال در این نواحی کاملاً حفظ شده و لایه لامینا دورا غایب است. این پدیده رادیولوژیک معرف کدام پاتولوژی است؟",
+                options: [
+                    "الف) سیمنتوبلاستومای متصل به ریشه در فاز فعال و تخریبی",
+                    "ب) سیمنتو-اوسئوس دیسپلازی منتشر در فاز اسکلروتیک انتهایی",
+                    "ج) هیپرسمنتوزیس منتشر و پیازی‌شکل در فازهای مخلوط تا اواخر بیماری پاژه",
+                    "د) دیسپلازی فیبروز منتشر با تظاهر ثانویه تحلیل ریشه‌های درگیر"
+                ],
+                correctOptionIndex: 2,
+                analysis: "<b>چرا گزینه «ج» صحیح است:</b> یکی از تظاهرات دندانی فوق‌العاده کلاسیک و بسیار اختصاصی در فازهای مخلوط و پایانی بیماری پاژه، ایجاد هیپرسمنتوزیس منتشر و شدید (رسوب پیازی‌شکل سمان روی ریشه‌ها) به همراه از بین رفتن لامینا دورا با حفظ فضای PDL است.<br><br><b>قانون مرور یک‌خطی:</b> ترکیب «بزرگ شدن استخوان فک بالا + هیپرسمنتوزیس منتشر و پیازی‌شکل ریشه‌ها» امضای اختصاصی بیماری پاژه است."
+            },
+            {
+                id: 13,
+                scenario: "در رادیوگرافی تصادفی یک زن سیاهپوست ۴۵ ساله و فاقد علامت، توده‌های متعدد رادیواپاک متراکم و لوبوله با هاله‌های رادیولوسنت پیرامونی در هر چهار کوادرانت فکین مشاهده می‌شود. دندان‌های مجاور همگی حیاتی (Vital) هستند. کدام یک از گزینه‌های زیر در خصوص این پاتولوژی نادرست است؟",
+                options: [
+                    "الف) دندان‌های درگیر در این ضایعه به هیچ عنوان نیازی به درمان ریشه ندارند.",
+                    "ب) تهیه بیوپسی یا انجام جراحی در این توده‌ها به علت ریسک استئومیلیت ثانویه ممنوع است.",
+                    "ج) این ضایعات ممکن است به صورت ثانویه با کیست‌های استخوانی ساده همراه شوند.",
+                    "د) به محض مشاهده این توده‌ها، تخلیه فوری ضایعات جهت پیشگیری از دفرمیتی توصیه می‌شود."
+                ],
+                correctOptionIndex: 3,
+                analysis: "<b>چرا گزینه «د» گزاره نادرست است:</b> سیمنتو-اوسئوس دیسپلازی فلورید (FCOD) یک ضایعه خوش‌خیم و خود‌محدودشونده است که در صورت عدم وجود علائم بالینی، به هیچ وجه نیاز به درمان جراحی یا تخلیه ندارد. جراحی این ضایعات خطر بسیار بالایی برای بروز نکروز و استئومیلیت‌های شدید به همراه دارد.<br><br><b>قانون مرور یک‌خطی:</b> در FCOD بدون علامت، جراحی و بیوپسی به علت خطر بروز استئومیلیت شدیداً ممنوع بوده و نیازمند پیگیری است."
+            },
+            {
+                id: 14,
+                scenario: "بیماری با تشخیص قطعی هایپرپاراتیروئیدیسم ثانویه (ناشی از نارسایی مزمن کلیه) جهت ارزیابی‌های رادیولوژیک فکین ارجاع داده شده است. در ارزیابی تصویربرداری کات‌سکان، کدام مجموعه از تغییرات رادیوگرافیک مستقیماً با اثرات هورمون PTH بر متابولیسم استخوان همخوانی دارد؟",
+                options: [
+                    "الف) افزایش ضخامت کورتکس بیسال مندیبل به همراه تشکیل استخوان پریوستی جدید",
+                    "ب) دمینرالیزاسیون منتشر استخوان، از بین رفتن لامینا دورا و وجود ضایعات لایتیک (تومورهای قهوه‌ای)",
+                    "ج) اسکلروز متراکم و یکنواخت مغز استخوان فک به همراه کلسیفیکاسیون غضروف تیروئید",
+                    "د) ایجاد نمای پیازی‌شکل پریوستی در لبه پایینی فک پایین بدون درگیری استخوان ترابکولار"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> ترشح بیش از حد PTH باعث تحریک استئوکلاست‌ها و بازجذب استخوان می‌شود. این پدیده در فکین به صورت دمینرالیزاسیون منتشر، از بین رفتن لامینا دورا و تشکیل کانون‌های لایتیک بازجذب استخوانی (تومورهای قهوه‌ای) تظاهر می‌یابد.<br><br><b>قانون مرور یک‌خطی:</b> سه‌گانه رادیوگرافیک HPT در فکین شامل «دمینرالیزاسیون گرند-گلس + فقدان لامینا دورا + تومورهای قهوه‌ای لایتیک» است."
+            },
+            {
+                id: 15,
+                scenario: "بیمار ۲۴ ساله‌ای با شکایت از اسکلروز شدید و یکنواخت استخوان‌های کل بدن (نمای استخوان در داخل استخوان) به کلینیک مراجعه می‌کند. بیمار متعاقب کشیدن دندان مولر دوم مندیبل دچار یک ضایعه التهابی بسیار مقاوم و وسیع به همراه تشکیل سِکِستر استخوانی شده است. پاتوفیزیولوژی اصلی رادیولوژیک این عارضه چیست؟",
+                options: [
+                    "الف) فعالیت مفرط و کنترل‌نشده استئوبلاست‌ها در پاسخ به تروما",
+                    "ب) کاهش شدید خون‌رسانی استخوان به علت انسداد مجاری ترابکولار ناشی از اسکلروز استئوپتروز",
+                    "ج) تهاجم مستقیم قارچ اکتینومایسس به مغز استخوان فعال بیمار",
+                    "د) تحریک بیش از حد لیگامان پریودنتال و ایجاد واکنش پریوستی لایه‌لایه مقاوم"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> استئوپتروز ناشی از نقص عملکرد استئوکلاست‌ها است. استخوان به شدت متراکم می‌شود اما مجاری عروقی بسته می‌شوند و خون‌رسانی کاهش می‌یابد. بنابراین هرگونه مداخله دندانی منجر به استئومیلیت‌های بسیار شدید و نکروز می‌شود.<br><br><b>قانون مرور یک‌خطی:</b> استخوان متراکم در استئوپتروز به علت فقر شدید عروقی، پس از هر تروما مستعد استئومیلیت نکروتیک وسیع است."
+            },
+            {
+                id: 16,
+                scenario: "کودک ۶ ساله‌ای با اتساع دوطرفه، متقارن و بدون درد در ناحیه زوایای فک پایین و کشیده شدن پوست صورت به سمت بالا (Eyes-to-heaven gaze) مراجعه می‌کند. در رادیوگرافی، ضایعات مولتیلوکولار رادیولوسنت متقارن دیده می‌شوند. کدام تغییر موقعیت دندانی در این پاتولوژی پاتوگنومونیک است؟",
+                options: [
+                    "الف) جابجایی دندان‌ها به سمت لبه تحتانی مندیبل و مزیالی شدن شدید دندان‌های قدامی",
+                    "ب) رانده شدن دندان‌های مولر در حال رشد به سمت جلو و قدام به طوری که از جوانه خود جلوتر می‌روند",
+                    "ج) جابجایی دندان‌ها به سمت باکال و ایجاد اتساع ملایم کورتکس لینگوال",
+                    "د) عدم ایجاد هیچ‌گونه جابجایی دندانی و حفظ کامل لامینا دورای جوانه‌های در حال رویش"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> در بیماری کروبیسم، ضایعات غول‌آسای مولتیلوکولار رشد کرده و به طرز بسیار مشخصی جوانه‌های دندان‌های مولر خلفی در حال رشد را به سمت جلو و قدام سوق می‌دهند و قوس دندانی را تخریب می‌کنند.<br><br><b>قانون مرور یک‌خطی:</b> کروبیسم با «ضایعات دوطرفه در زاویه مندیبل کودکان + جابجایی قدامی شدید دندان‌های مولر خلفی» مشخص می‌شود."
+            },
+            {
+                id: 17,
+                scenario: "یک زن ۳۲ ساله با یک توده سفت و بدون درد در بدنه فک پایین مراجعه کرده است. در رادیوگرافی، ضایعه‌ای تک‌حفره‌ای با حدود کورتیکه بسیار مشخص و هاله رادیولوسنت محیطی دیده می‌شود که باعث اکسپنشن دایره‌ای شکل و رو به پایین کورتکس تحتانی مندیبل (Downward bowing) شده است. تشخیص رادیولوژیک چیست؟",
+                options: [
+                    "الف) Periapical Cemento-Osseous Dysplasia",
+                    "ب) Monostotic Fibrous Dysplasia",
+                    "ج) Central Cemento-Ossifying Fibroma (COF)",
+                    "د) Paget's Disease of Bone"
+                ],
+                correctOptionIndex: 2,
+                analysis: "<b>چرا گزینه «ج» صحیح است:</b> سیمنتو-اوسئوس فیبرومای مرکزی (COF) یک تومور با الگوی رشد گریز از مرکز (دایره‌ای) است. این الگوی رشد به شکل کلاسیک باعث ایجاد انحنا و تعظیم رو به پایین لبه تحتانی مندیبل با مرزی کورتیکه و مشخص می‌شود.<br><br><b>قانون مرور یک‌خطی:</b> رشد گریز از مرکز و ایجاد انحنای رو به پایین در لبه مندیبل (Downward bowing) مشخصه پاتوگنومونیک COF است."
+            },
+            {
+                id: 18,
+                scenario: "در رادیوگرافی لترال جمجمه یک بیمار مسن، نواحی رادیولوسنت بزرگ و کاملاً مشخصی در استخوان فرونتال و اکسیپیتال مشاهده می‌شود که معرف فاز لایتیک اولیه بیماری پاژه است. این نمای رادیوگرافیک جمجمه در منابع با چه نامی شناخته می‌شود؟",
+                options: [
+                    "الف) Cotton-wool skull",
+                    "ب) Osteoporosis circumscripta",
+                    "ج) Hair-on-end phenomenon",
+                    "د) Ground-glass calvarium"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> در فاز لایتیک اولیه بیماری پاژه در استخوان جمجمه، بازجذب شدید استخوان منجر به ایجاد نواحی بزرگ رادیولوسنت با حدود مشخص می‌شود که به عنوان «Osteoporosis circumscripta» شناخته می‌شود.<br><br><b>قانون مرور یک‌خطی:</b> نمای رادیولوسنت وسیع جمجمه در فاز تخریبی اولیه بیماری پاژه، «Osteoporosis circumscripta» نام دارد."
+            },
+            {
+                id: 19,
+                scenario: "یک بیمار ۲۲ ساله با حضور سه توده رادیواپک بسیار متراکم (استئوما) در فک و ۴ دندان اضافی نهفته مراجعه می‌کند. رادیولوژیست با مشکوک شدن به سندرم گاردنر، بیمار را فوراً جهت کدام ارزیابی سیستمیک حیاتی ارجاع می‌دهد؟",
+                options: [
+                    "الف) بررسی میزان کلسیم و فسفر سرم جهت رد پرکاری پاراتیروئید",
+                    "ب) کولونوسکوپی و معاینه دستگاه گوارش جهت بررسی پولیپ‌های آدنوماتوز با پتانسیل بدخیمی",
+                    "ج) اسکن کل بدن جهت یافتن متاستازهای استئوسارکوم مولتی‌سنتریک",
+                    "د) ارزیابی عملکرد غده تیروئید به علت شانس بالای مدولاری تیروئید کارسینوما"
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> سه‌گانه سندرم گاردنر شامل استئوماهای فکین، دندان‌های اضافی و پولیپ‌های آدنوماتوز روده است. این پولیپ‌ها در صورت عدم درمان تقریباً در ۱۰۰٪ موارد دچار ترانسفورماسیون بدخیم به سرطان روده می‌شوند؛ بنابراین ارجاع به کولونوسکوپی نجات‌دهنده حیات است.<br><br><b>قانون مرور یک‌خطی:</b> استئوماهای متعدد فک + دندان اضافی = ارجاع سریع به کولونوسکوپی."
+            },
+            {
+                id: 20,
+                scenario: "یک زن ۳۸ ساله بدون علامت، ضایعات رادیولوسنت متعددی در اطراف اپکس اینسیزورهای مندیبل دارد. دندان‌ها زنده و سالمند اما دندانپزشک قبلی اشتباهاً یکی را RCT کرده است. روند پیشرفت رادیوگرافیک این ضایعه (PCOD) در سال‌های آینده چگونه پیش‌بینی می‌شود؟",
+                options: [
+                    "الف) ضایعه به تدریج بزرگ‌تر شده و در نهایت با کورتکس بیسال مندیبل ادغام و کورتکس را تخریب می‌کند.",
+                    "ب) ضایعه به تدریج رسوبات رادیواپاک مرکزی پیدا کرده و در نهایت به توده‌های رادیواپاک با هاله لوسنت تبدیل می‌شود.",
+                    "ج) ضایعه خودبه‌خود تحلیل رفته و در پی افزایش سن بیمار با استخوان نرمال جایگزین می‌شود.",
+                    "د) ضایعه به علت انجام درمان ریشه اشتباه، فوراً به فاز تهاجمی استئومای محیطی تبدیل خواهد شد."
+                ],
+                correctOptionIndex: 1,
+                analysis: "<b>چرا گزینه «ب» صحیح است:</b> ضایعات سیمنتو-اوسئوس دیسپلازی دارای سیر کلاسیک سه مرحله‌ای هستند: ۱. لایتیک (رادیولوسنت)، ۲. مخلوط (ظهور کانون‌های رادیواپک مرکزی) و ۳. اسکلروتیک (توده‌های کاملاً رادیواپک با هاله لوسنت). شناخت این سیر مانع از درمان ریشه غیرضروری می‌شود.<br><br><b>قانون مرور یک‌خطی:</b> سیر پیشرفت PCOD از رادیولوسنسی خالص شروع شده، به فاز مخلوط رسیده و به نمای رادیواپاک ختم می‌شود."
+            }
+        ];
+
+        let currentScore = 0;
+        let answeredQuestions = new Set();
+
+        function renderQuestions() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = ''; // Clear container
+
+            questions.forEach((q, index) => {
+                const qNumber = index + 1;
+                
+                // Build the options HTML
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-transparent bg-white hover:bg-indigo-50 hover:border-indigo-100 cursor-pointer transition-all duration-200 group" id="label-q${q.id}-opt${optIndex}">
+                            <div class="pt-1">
+                                <input type="radio" name="question-${q.id}" value="${optIndex}" class="peer hidden" onchange="selectOption(${q.id}, ${optIndex})">
+                                <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center peer-checked:border-indigo-600 peer-checked:bg-indigo-600 transition-colors">
+                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                            </div>
+                            <span class="text-gray-700 leading-relaxed group-hover:text-indigo-900">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                // Build the entire question card
+                const card = `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8 relative overflow-hidden transition-all duration-300" id="card-${q.id}">
+                        <!-- Top decorative bar -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
+                        
+                        <!-- Header & Badges -->
+                        <div class="mb-6">
+                            <h2 class="text-xl md:text-2xl font-extrabold text-gray-800">
+                                <span class="text-indigo-600">سوال ${qNumber}</span>
+                            </h2>
+                        </div>
+
+                        <!-- Scenario -->
+                        <div class="bg-slate-50 border-r-4 border-indigo-400 p-5 rounded-l-xl mb-6 shadow-inner">
+                            <p class="text-gray-700 leading-8 text-justify font-medium">${q.scenario}</p>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="space-y-3 mb-6" id="options-container-${q.id}">
+                            ${optionsHtml}
+                        </div>
+
+                        <!-- Action Button -->
+                        <button id="btn-${q.id}" onclick="submitAnswer(${q.id})" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
+                            <span>بررسی و مشاهده پاسخ تشریحی</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <!-- Results & Analysis Area (Hidden initially) -->
+                        <div id="result-${q.id}" class="mt-8 hidden opacity-0 transition-opacity duration-500 ease-in-out">
+                            <div class="w-full h-px bg-gray-200 mb-6"></div>
+                            
+                            <div class="flex items-center gap-3 mb-4" id="verdict-banner-${q.id}">
+                                <!-- Filled by JS -->
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                                <h4 class="font-bold text-gray-800 mb-3 text-lg">تحلیل علمی رفرنس:</h4>
+                                <p class="text-gray-600 leading-8 text-justify">${q.analysis}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += card;
+            });
+        }
+
+        // UI helper to simulate radio button selection styling
+        function selectOption(qId, optIndex) {
+            if(answeredQuestions.has(qId)) return; // Prevent changing visual state if already answered
+
+            // Reset all labels for this question
+            const q = questions.find(question => question.id === qId);
+            for(let i=0; i < q.options.length; i++) {
+                const label = document.getElementById(`label-q${qId}-opt${i}`);
+                if(label) {
+                    label.classList.remove('bg-indigo-50', 'border-indigo-300');
+                    label.classList.add('bg-white', 'border-transparent');
+                }
+            }
+            
+            // Highlight selected
+            const selectedLabel = document.getElementById(`label-q${qId}-opt${optIndex}`);
+            if(selectedLabel) {
+                selectedLabel.classList.remove('bg-white', 'border-transparent');
+                selectedLabel.classList.add('bg-indigo-50', 'border-indigo-300');
+            }
+        }
+
+        // Custom Toast function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function submitAnswer(qId) {
+            if (answeredQuestions.has(qId)) return; // Already answered
+
+            const questionObj = questions.find(q => q.id === qId);
+            const selectedRadio = document.querySelector(`input[name="question-${qId}"]:checked`);
+            
+            if (!selectedRadio) {
+                showToast("لطفاً ابتدا یک گزینه را انتخاب کنید.");
+                return;
+            }
+
+            const selectedIndex = parseInt(selectedRadio.value);
+            const isCorrect = selectedIndex === questionObj.correctOptionIndex;
+            
+            // Mark as answered
+            answeredQuestions.add(qId);
+
+            // Update Score
+            if (isCorrect) {
+                currentScore++;
+                document.getElementById('score-display').innerText = `${currentScore} / ۲۰`;
+            }
+
+            // Disable all radios for this question
+            const allRadios = document.querySelectorAll(`input[name="question-${qId}"]`);
+            allRadios.forEach(radio => {
+                radio.disabled = true;
+                const label = document.getElementById(`label-q${qId}-opt${radio.value}`);
+                label.classList.remove('cursor-pointer', 'hover:bg-indigo-50');
+                label.classList.add('cursor-default', 'opacity-70');
+            });
+
+            // Styling the selected and correct options
+            const correctLabel = document.getElementById(`label-q${qId}-opt${questionObj.correctOptionIndex}`);
+            const userLabel = document.getElementById(`label-q${qId}-opt${selectedIndex}`);
+
+            // Always highlight correct answer green
+            correctLabel.classList.remove('bg-white', 'bg-indigo-50', 'border-transparent', 'border-indigo-300', 'opacity-70');
+            correctLabel.classList.add('bg-green-50', 'border-green-500', 'opacity-100', 'correct-anim');
+
+            if (!isCorrect) {
+                // Highlight selected wrong answer red
+                userLabel.classList.remove('bg-indigo-50', 'border-indigo-300', 'opacity-70');
+                userLabel.classList.add('bg-red-50', 'border-red-400', 'opacity-100', 'wrong-anim');
+            }
+
+            // Hide the button
+            const btn = document.getElementById(`btn-${qId}`);
+            btn.style.display = 'none';
+
+            // Show results
+            const resultDiv = document.getElementById(`result-${qId}`);
+            const banner = document.getElementById(`verdict-banner-${qId}`);
+            
+            if (isCorrect) {
+                banner.innerHTML = `
+                    <div class="bg-green-100 p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-700">پاسخ شما کاملاً صحیح است!</h3>
+                `;
+            } else {
+                banner.innerHTML = `
+                    <div class="bg-red-100 p-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-red-700">پاسخ نادرست بود.</h3>
+                `;
+            }
+
+            resultDiv.classList.remove('hidden');
+            // Small timeout to allow display:block to apply before changing opacity for transition
+            setTimeout(() => {
+                resultDiv.classList.remove('opacity-0');
+            }, 50);
+        }
+
+        // Initialize the app on load
+        window.onload = () => {
+            renderQuestions();
+        };
+    </script>
+</body>
+</html>
